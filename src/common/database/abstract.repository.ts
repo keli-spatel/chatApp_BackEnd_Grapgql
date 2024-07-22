@@ -29,7 +29,7 @@ export abstract class AbstractRepository<T extends AbstractEntity>{
         filterQuery: FilterQuery<T>,
         update: UpdateQuery<T>
     ): Promise<T> {
-        const document = await this.model.findOneAndUpdate(filterQuery,update, {lean: true});
+        const document = await this.model.findOneAndUpdate(filterQuery,update, {lean: true,new: true},);
 
         if(!document) {
             this.logger.warn('Documnt not found with filterQuery:%o', filterQuery)

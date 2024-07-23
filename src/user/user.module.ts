@@ -9,7 +9,9 @@ import { UserResolver } from "./user.resolver";
     imports: [
         DatabaseModule.forFeature([{name: User.name , schema: UserSchema}])
     ],
-    providers: [UserRepository,UserService,UserResolver],
+    providers: [UserRepository,UserService,UserResolver
+        
+    ],
     controllers:[]
 })
 export class UserModule{}

@@ -9,5 +9,14 @@ type User {
 }
 
 type Query {
-  createUser: [User!]!
+  hello: String!
+}
+
+type Mutation {
+  createUser(createUserDTO: createUserDTO!, password: String!): User!
+}
+
+input createUserDTO {
+  username: String!
+  email: String!
 }

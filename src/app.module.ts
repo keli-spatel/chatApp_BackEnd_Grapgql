@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Inject, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import * as Joi from 'joi';
 import { UserModule } from "./user/user.module";
@@ -6,6 +6,8 @@ import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { MongooseModule } from "@nestjs/mongoose";
 import { join } from "path";
+import { LoggerModule } from 'nestjs-pino';
+
 
  
 
@@ -53,6 +55,28 @@ import { join } from "path";
       inject: [ ConfigService ],
     }),
     UserModule,
+    LoggerModule.forRootAsync({
+      useFactory:(configservice: ConfigService) => {
+        const isProduction = configservice.getOrThrow('NODE_ENV') === 'production';
+
+        return{
+          pinoHttp:{
+             // we will remove pino-pretty in production since it might slow down the app
+              transform: isProduction
+              ? undefined  
+              :{
+                target:'pino-pretty',
+                options:{
+                  singleLine: true
+                }
+              },
+            // debug might be too verbose for production
+              level: isProduction ? "info" : 'debug',
+          }
+        }
+      },
+    inject:[ConfigService]
+    })
   ],
   controllers: [],
   providers: [],                                        

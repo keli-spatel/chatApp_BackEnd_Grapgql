@@ -11,6 +11,7 @@ export class UserResolver {
     hello() {
       return 'Hello, world!';
     }
+    
     // CreateUser
     @Mutation(() => User)
     async createUser(

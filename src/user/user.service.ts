@@ -1,9 +1,9 @@
-import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcrypt'
 import { User } from "./entity/user.entity";
 import { createUserDTO } from "./dto/createuser.input";
+import { error } from "console";
 
 @Injectable()
 export class UserService {
@@ -22,4 +22,19 @@ export class UserService {
         })
         return newUser;
     }
+
+    async varifyUser(email:string,password:string){
+        const user = await  this.userRepository.find({email});
+    // user not found scenario is handled in the abstract repository
+
+    const isPosswordValid = await bcrypt.compare(password ,user.password)
+
+    if(!isPosswordValid){
+        throw new UnauthorizedException(error);
+    }else{
+        return user;
+    }
+
+    }
+    
 }

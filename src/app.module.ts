@@ -9,8 +9,6 @@ import { join } from "path";
 import { LoggerModule } from 'nestjs-pino';
 
 
- 
-
 @Module({
   imports: [
     /// Configration setup

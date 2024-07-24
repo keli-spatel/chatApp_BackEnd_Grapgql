@@ -7,11 +7,12 @@ import { UserResolver } from "./user.resolver";
 
 @Module({
     imports: [
-        DatabaseModule.forFeature([{name: User.name , schema: UserSchema}])
+        DatabaseModule.forFeature([{ name: User.name, schema: UserSchema }])
     ],
-    providers: [UserRepository,UserService,UserResolver
-        
+    providers: [UserRepository, UserService, UserResolver
+
     ],
-    controllers:[]
+    exports: [UserService],
+    controllers: []
 })
-export class UserModule{}
+export class UserModule { }

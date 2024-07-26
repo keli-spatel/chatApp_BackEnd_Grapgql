@@ -18,6 +18,13 @@ export class User extends AbstractSchema{
     @Field(() => String)
     email: string
 
+    @Field()
+    accessToken?:string
+
+    @Prop({default:null})
+    @Field(() => String)
+    refreshToken?: string
+
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

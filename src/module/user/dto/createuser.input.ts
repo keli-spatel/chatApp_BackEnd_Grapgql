@@ -10,4 +10,7 @@ export class createUserDTO {
 
     @Field()
     email:string
+
+    @Field()
+    password:string
 }

@@ -4,8 +4,10 @@
 
 type User {
   _id: ID!
+  userName: String!
   email: String!
-  username: String!
+  accessToken: String!
+  refreshToken: String!
 }
 
 type Query {
@@ -13,10 +15,5 @@ type Query {
 }
 
 type Mutation {
-  createUser(createUserDTO: createUserDTO!, password: String!): User!
-}
-
-input createUserDTO {
-  username: String!
-  email: String!
+  createUser(email: String!, password: String!, userName: String!): User!
 }

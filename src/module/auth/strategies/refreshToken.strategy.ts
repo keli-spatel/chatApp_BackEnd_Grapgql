@@ -9,7 +9,11 @@ export class RefreshTokenStrategy extends PassportStrategy(Strategy, "RefreshTok
        super ({
            jwtFromRequest: ExtractJwt.fromHeader("token"),
            ignoreExpiration:true,
-           secretOrKey: configService.get<string>("REFRESH_TOKEN_SECRET") 
+           secretOrKey: configService.get<string>("REFRESH_TOKEN_SECRET"),
+           passReqToCallback:true,
         })
+    }
+    validate(payload:any){
+        return payload
     }
 }

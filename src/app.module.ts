@@ -1,12 +1,12 @@
 import { Inject, Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import * as Joi from 'joi';
-import { UserModule } from "./user/user.module";
 import { GraphQLModule } from "@nestjs/graphql";
 import { ApolloDriver, ApolloDriverConfig } from "@nestjs/apollo";
 import { MongooseModule } from "@nestjs/mongoose";
 import { join } from "path";
 import { LoggerModule } from 'nestjs-pino';
+import { UserModule } from "./module/user/user.module";
 
 
 @Module({
@@ -23,6 +23,8 @@ import { LoggerModule } from 'nestjs-pino';
         PORT: Joi.number().port().default(3000),  
         MONGODB_URI: Joi.string().required(),
         GRAPHQL_PLAYGROUND: Joi.boolean().required(), 
+        ACCESS_TOKEN_SECRET: Joi.string().required(),
+        REFRESH_TOKEN_SECRET: Joi.string().required(),
       }),
       validationOptions: {
         allowUnknown: true,

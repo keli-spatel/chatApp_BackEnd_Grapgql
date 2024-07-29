@@ -6,7 +6,7 @@ import { AbstractSchema } from "src/common/database/abstract.schema";
 @ObjectType()
 export class User extends AbstractSchema{
 
-    @Prop()
+    @Prop({unique:true})
     @Field(() => String)
     userName: string
 
@@ -14,7 +14,7 @@ export class User extends AbstractSchema{
     @HideField()
     password:string
 
-    @Prop()
+    @Prop({unique:true})
     @Field(() => String)
     email: string
 

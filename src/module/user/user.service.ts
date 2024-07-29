@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcrypt'
 import { error } from "console";
@@ -11,7 +11,7 @@ import { ForbiddenError } from "apollo-server-express";
 
 @Injectable()
 export class UserService {
-    
+
     constructor(
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
@@ -24,44 +24,85 @@ export class UserService {
         return bcrypt.hash(data, 10);
     }
 
-    async createUser(email: string, password: string, userName:string): Promise<Partial<User>> {
+    async createUser(email: string, password: string, userName: string): Promise<Partial<User>> {
         try {
-          const newUser = await this.userRepository.create({
-              email,
-              userName,
-              password: await this.hashData(password),
-          });
-          
-          const token = await this.getToken(newUser._id.toString(), newUser.email);
-    
-          await this.UpdateHashRT(newUser._id.toString(), token.refreshToken);
-          
-          return {
-            ...newUser,
-            accessToken: token.accessToken,
-            refreshToken: token.refreshToken,
-          }
+            const newUser = await this.userRepository.create({
+                email,
+                userName,
+                password: await this.hashData(password),
+            });
+
+            const token = await this.getToken(newUser._id.toString(), newUser.email);
+
+            await this.UpdateHashRT(newUser._id.toString(), token.refreshToken);
+
+            return {
+                ...newUser,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken,
+            }
         } catch (error) {
-          // E11000 is the error code for duplicate key error
-          if (error.message.includes('E11000')) {
-            throw new UnprocessableEntityException(
-              'User with this email already exists',
-            );
-          }
-          throw error;
+            // E11000 is the error code for duplicate key error
+            if (error.message.includes('E11000')) {
+                throw new UnprocessableEntityException(
+                    'User with this email already exists',
+                );
+            }
+            throw error;
         }
-      }
+    }
+
+
+    // for Login User
+    async Login(email: string, password: string) {
+
+        try {
+            const user = await this.varifyUser(email, password)
+
+            const token = await this.getToken(user._id.toString(), user.email)
+
+            await this.UpdateHashRT(user._id.toString(), user.refreshToken)
+
+            return {
+                ...user,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken
+            }
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async LogOut(userId: string): Promise<boolean> {
+        try {
+            const isLoggedOut = await this.userRepository.findOneAndUpdate(
+                { _id: userId },
+                {
+                    $set: {
+                        refreshToken: null
+                    }
+                }
+            )
+            if (isLoggedOut) {
+                return true;
+            }
+            return false;
+        } catch (error) {
+            return error
+        }
+    }
+
 
     //  Check and Varify User
     async varifyUser(email: string, password: string) {
-        const user = await this.userRepository.find({ email });
+        const user = await this.userRepository.findOne({ email });
 
 
         // user not found scenario is handled in the abstract repository
         const isPosswordValid = await bcrypt.compare(password, user.password)
 
         if (!isPosswordValid) {
-            throw new UnauthorizedException(error);
+            throw new UnauthorizedException("Unvarify User");
         } else {
             return user;
         }
@@ -106,19 +147,19 @@ export class UserService {
         )
     }
 
-    async NewToken(userId:string , RT:string){
-        const user = await this.userRepository.findOne({_id:userId})
+    async NewToken(userId: string, RT: string): Promise<Tokens> {
+        const user = await this.userRepository.findOne({ _id: userId })
 
-        if(!user || !user.refreshToken) throw new ForbiddenException("Access Denied")
+        if (!user || !user.refreshToken) throw new ForbiddenException("Access Denied")
 
-        const RTMatch = await bcrypt.compare(RT , user.refreshToken)
+        const RTMatch = bcrypt.compare(user.refreshToken, RT)
 
-        if(!RTMatch) throw new ForbiddenException("Access Denied")
+        if (!RTMatch) throw new ForbiddenException("Access Denied2")
 
         const token = await this.getToken(user._id.toString(), user.email)
 
-        await this.UpdateHashRT(user._id.toString() , user.refreshToken)
-    
+        await this.UpdateHashRT(user._id.toString(), user.refreshToken)
+
         return token
     }
 }

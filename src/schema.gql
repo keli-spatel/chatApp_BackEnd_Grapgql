@@ -10,10 +10,19 @@ type User {
   refreshToken: String!
 }
 
+type Tokens {
+  accessToken: String!
+  refreshToken: String!
+}
+
 type Query {
   hello: String!
+  me: User!
 }
 
 type Mutation {
   createUser(email: String!, password: String!, userName: String!): User!
+  Login(email: String!, password: String!): User!
+  TokenFormRT(userId: String!, refreshToken: String!): Tokens!
+  LogOut(userId: String!): Boolean!
 }

@@ -3,6 +3,8 @@ import { UserService } from "./user.service";
 import { User } from "./Schema/user.schema";
 import { CurrentUser } from "src/common/decoretor/currentUser.decoretor";
 import { Tokens } from "src/common/types/comman.types";
+import { UseGuards } from "@nestjs/common";
+import { AtGuard } from "../auth/guards/AT.guard";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -14,8 +16,6 @@ export class UserResolver {
     }
     
     // CreateUser
-
-
     @Mutation(() => User)
     async createUser(
         @Args('email') email: string, 
@@ -42,6 +42,7 @@ export class UserResolver {
     }
 
     @Mutation(() => Tokens)
+    // @UseGuards(AtGuard)
     async TokenFormRT(
         @Args('userId') userId:string,
         @Args('refreshToken') refreshToken:string,
@@ -50,6 +51,7 @@ export class UserResolver {
     }
 
     @Mutation(() => Boolean)
+    // @UseGuards(AtGuard)
     async LogOut(
         @Args('userId') userId:string){
             return await this.userService.LogOut(userId)

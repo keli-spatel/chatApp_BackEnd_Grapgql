@@ -3,9 +3,11 @@ import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
 
 @Injectable()
-export class AccessTokenGuard extends AuthGuard('AccessToekn'){
-        getRequest(context: ExecutionContext) {
-            const ctx = GqlExecutionContext.create(context)
-            return ctx.getContext().req;
-        }
+export class AtGuard extends AuthGuard('AccessToken') {
+
+    getRequest(context: ExecutionContext) {
+        const ctx = GqlExecutionContext.create(context);
+        
+        return ctx.getContext().req;
+    }
 }

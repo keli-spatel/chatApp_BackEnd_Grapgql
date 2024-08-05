@@ -7,6 +7,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { join } from "path";
 import { LoggerModule } from 'nestjs-pino';
 import { UserModule } from "./module/user/user.module";
+import { Chatmodule } from "./module/chat/chat.module";
 
 
 @Module({
@@ -55,6 +56,7 @@ import { UserModule } from "./module/user/user.module";
       inject: [ ConfigService ],
     }),
     UserModule,
+    Chatmodule,
     LoggerModule.forRootAsync({
       useFactory:(configservice: ConfigService) => {
         const isProduction = configservice.getOrThrow('NODE_ENV') === 'production';

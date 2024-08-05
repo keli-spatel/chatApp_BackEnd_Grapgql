@@ -15,9 +15,17 @@ type Tokens {
   refreshToken: String!
 }
 
+type Chat {
+  _id: ID!
+  userId: String!
+  isPrivate: Boolean!
+  userIds: [String!]!
+  name: String
+}
+
 type Query {
   hello: String!
-  me: User!
+  user(_id: String!): User!
 }
 
 type Mutation {
@@ -25,4 +33,9 @@ type Mutation {
   Login(email: String!, password: String!): User!
   TokenFormRT(userId: String!, refreshToken: String!): Tokens!
   LogOut(userId: String!): Boolean!
+  createChat(createUserDto: CreateChatDto!, userId: String!): Chat!
+}
+
+input CreateChatDto {
+  name: String!
 }

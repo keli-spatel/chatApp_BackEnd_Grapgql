@@ -5,12 +5,13 @@ import { UserService } from "./user.service";
 import { UserResolver } from "./user.resolver";
 import { User, UserSchema } from "./Schema/user.schema";
 import { JwtService } from "@nestjs/jwt";
+import { Chatmodule } from "../chat/chat.module";
 
 @Module({
     imports: [
         DatabaseModule.forFeature([{ name: User.name, schema: UserSchema }])
     ],
-    providers: [UserRepository, UserService, UserResolver,JwtService
+    providers: [UserRepository, UserService, UserResolver,JwtService,
 
     ],
     exports: [UserService],

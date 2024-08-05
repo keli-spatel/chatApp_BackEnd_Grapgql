@@ -1,4 +1,4 @@
-import { ForbiddenException, Injectable, NotFoundException, UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
+import { ForbiddenException, Injectable, NotFoundException, Query, UnauthorizedException, UnprocessableEntityException } from "@nestjs/common";
 import { UserRepository } from "./user.repository";
 import * as bcrypt from 'bcrypt'
 import { error } from "console";
@@ -8,6 +8,7 @@ import { TokenPayload, Tokens } from "src/common/types/comman.types";
 import { createUserDTO } from "./dto/createuser.input";
 import { User } from "./Schema/user.schema";
 import { ForbiddenError } from "apollo-server-express";
+import { Args } from "@nestjs/graphql";
 
 @Injectable()
 export class UserService {
@@ -52,7 +53,6 @@ export class UserService {
         }
     }
 
-
     // for Login User
     async Login(email: string, password: string) {
 
@@ -71,6 +71,10 @@ export class UserService {
         } catch (error) {
             throw error;
         }
+    }
+
+    async findOne(_id:string):Promise<User>{
+        return await this.userRepository.findOne({_id})
     }
 
     async LogOut(userId: string): Promise<boolean> {

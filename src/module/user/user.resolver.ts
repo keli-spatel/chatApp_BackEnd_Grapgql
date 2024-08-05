@@ -1,10 +1,7 @@
 import { Args, Resolver,Mutation, Query } from "@nestjs/graphql";
 import { UserService } from "./user.service";
 import { User } from "./Schema/user.schema";
-import { CurrentUser } from "src/common/decoretor/currentUser.decoretor";
 import { Tokens } from "src/common/types/comman.types";
-import { UseGuards } from "@nestjs/common";
-import { AtGuard } from "../auth/guards/AT.guard";
 
 @Resolver(() => User)
 export class UserResolver {
@@ -13,6 +10,11 @@ export class UserResolver {
     @Query(() => String)
     hello() {
       return 'Hello, world!';
+    }
+
+    @Query(() => User, {name:"user"})
+    async findone(@Args('_id') _id:string): Promise<User>{
+        return this.userService.findOne(_id);
     }
     
     // CreateUser
@@ -33,13 +35,13 @@ export class UserResolver {
         return this.userService.Login(email,password)
     }
 
-    @Query(() => User)
-    async me(@CurrentUser() user: any): Promise<User> {
-        if (!user) {
-            throw new Error('User not authenticated');
-          }
-          return await user;
-    }
+    // @Query(() => User)
+    // async me(@CurrentUser() user: any): Promise<User> {
+    //     if (!user) {
+    //         throw new Error('User not authenticated');
+    //       }
+    //       return await user;
+    // }
 
     @Mutation(() => Tokens)
     // @UseGuards(AtGuard)

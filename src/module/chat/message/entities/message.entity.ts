@@ -9,7 +9,7 @@ export class Message extends AbstractSchema {
     @Field(() => String)
     content: string
     
-    @Field(() => DateScalar)
+    @Field()
     createdAt: Date
     
     @Field(() => User)

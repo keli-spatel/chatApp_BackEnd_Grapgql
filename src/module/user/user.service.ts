@@ -5,10 +5,7 @@ import { error } from "console";
 import { JwtService } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { TokenPayload, Tokens } from "src/common/types/comman.types";
-import { createUserDTO } from "./dto/createuser.input";
 import { User } from "./Schema/user.schema";
-import { ForbiddenError } from "apollo-server-express";
-import { Args } from "@nestjs/graphql";
 
 @Injectable()
 export class UserService {

@@ -23,6 +23,19 @@ type Chat {
   name: String
 }
 
+type Message {
+  _id: ID!
+  content: String!
+  createdAt: DateTime!
+  user: User!
+  chatId: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Query {
   hello: String!
   user(_id: String!): User!
@@ -34,8 +47,14 @@ type Mutation {
   TokenFormRT(userId: String!, refreshToken: String!): Tokens!
   LogOut(userId: String!): Boolean!
   createChat(createUserDto: CreateChatDto!, userId: String!): Chat!
+  createMessage(createMessageDto: CreateMessageDto!, userId: String!): Message!
 }
 
 input CreateChatDto {
   name: String!
+}
+
+input CreateMessageDto {
+  content: String!
+  chatId: String!
 }

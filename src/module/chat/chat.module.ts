@@ -6,6 +6,7 @@ import { UserModule } from "../user/user.module";
 import { ChatRepository } from "./chat.repository";
 import { ChatService } from "./chat.service";
 import { ChatResolver } from "./chat.resolver";
+import { MessageModule } from "./message/message.module";
 
 @Module({
     imports: [DatabaseModule.forFeature([
@@ -15,6 +16,7 @@ import { ChatResolver } from "./chat.resolver";
         },
     ]),
     forwardRef(() => UserModule),
+    forwardRef(() => MessageModule),
     ],
 
     providers: [ChatRepository, ChatService, ChatResolver],
